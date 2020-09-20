@@ -1,4 +1,4 @@
-function [models, M] = main(class, data_directory, dataset_directory, results_directory)
+function [models, M, models_name] = main(class, data_directory, dataset_directory, results_directory)
     % Trains the model for the given class and performs evaluation and
     % testing.
 
@@ -65,12 +65,6 @@ function [models, M] = main(class, data_directory, dataset_directory, results_di
     val_set_name = ['trainval'];
     val_set = get_pascal_set(dataset_params, val_set_name);
 
-    % Define test-set
-    test_params = params;
-    test_params.detect_exemplar_nms_os_threshold = 0.5;
-    test_set_name = ['test'];
-    test_set = get_pascal_set(dataset_params, test_set_name);
-
     % Train the exemplars and get updated models name
     [models, models_name] = train_exemplars(initial_models, neg_set, train_params);
 
@@ -79,15 +73,6 @@ function [models, M] = main(class, data_directory, dataset_directory, results_di
 
     % Perform Platt calibration and M-matrix estimation
     M = perform_calibration(val_grid, models, val_params);
+end
 
-    % Apply on test set
-    test_grid = detect_imageset(test_set, models, test_params, test_set_name);
-
-    % Apply calibration matrix to test-set results
-    test_struct = pool_exemplar_dets(test_grid, models, M, test_params);
-
-    % Show top 20 detections as exemplar-inpainting results    
-    show_top_dets(test_struct, test_grid, test_set, models, params,  20, test_set_name);
-
-    % Perform the exemplar evaluation
-    evaluate_pascal_voc(test_struct, test_grid, params, test_set_name, class, models_name);
+    
