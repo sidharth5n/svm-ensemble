@@ -1,4 +1,4 @@
-function os = getosmatrix_bb(boxes, gts)
+function os = iou(boxes, gts)
     % Given N1 boxes and N2 ground truth boxes, computes IoU (Intersection
     % over Union) score of each box wrt each ground truth box resulting in
     % an N1 x N2 score matrix.
