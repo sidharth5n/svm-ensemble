@@ -120,7 +120,7 @@ function grid = detect_imageset(imageset, models, params, setname)
             boxes = adjust_boxes(coarse_boxes,models);
 
             if params.detect_min_scene_os > 0.0
-                os = getosmatrix_bb(boxes,[1 1 size(I,2) size(I,1)]);
+                os = iou(boxes,[1 1 size(I,2) size(I,1)]);
                 goods = find(os >= params.detect_min_scene_os);
                 boxes = boxes(goods,:);
                 coarse_boxes = coarse_boxes(goods,:);

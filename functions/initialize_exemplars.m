@@ -148,7 +148,7 @@ function show_exemplar_frames(allmodels, N_PER_PAGE)
             gtprime = apply_transform(m.gt_box, transform);
             [u,v] = find(m.model.mask);
             curselection = [min(v) min(u) max(v) max(u)];
-            curos = getosmatrix_bb(curselection, gtprime);
+            curos = iou(curselection, gtprime);
             
             subplot(N, 3, o+2)
             imagesc(cim);
