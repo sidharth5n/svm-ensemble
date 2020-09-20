@@ -4,8 +4,6 @@ Detecting objects in PASCAL VOC 2007 dataset using ensemble of exemplar SVMs. Th
 Compile all the files
 ```matlab
 compile;
-cd utils;
-util_compile;
 ```
 
 For training the model
