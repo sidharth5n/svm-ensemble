@@ -1,4 +1,4 @@
-function x = esvm_features(I, sbin)
+function x = features(I, sbin)
     % Computes the HOG feature of a color image.
     %
     % Parameters

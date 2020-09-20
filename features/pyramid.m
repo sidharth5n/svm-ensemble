@@ -1,4 +1,4 @@
-function [feat, scale] = esvm_pyramid(im, params)
+function [feat, scale] = pyramid(im, params)
     % [feat, scale] = esvm_pyramid(im, params);
     % Compute a pyramid worth of features by calling resize/features in
     % over a set of scales defined inside params
