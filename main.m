@@ -1,4 +1,4 @@
-function [models, M, models_name] = main(class, data_directory, dataset_directory, results_directory)
+function [models, M, models_name, params] = main(class, data_directory, dataset_directory, results_directory)
     % Trains the model for the given class and performs evaluation and
     % testing.
 
@@ -34,21 +34,22 @@ function [models, M, models_name] = main(class, data_directory, dataset_director
     params.model_type = 'exemplar';
     params.dataset_params = dataset_params;
 
-    %Initialize exemplar stream
+    % Initialize exemplar stream
     stream_params.stream_set_name = 'trainval';
     stream_params.stream_max_ex = 10000;
     stream_params.must_have_seg = 0;
     stream_params.must_have_seg_string = '';
-    %must be scene or exemplar;
+    % must be scene or exemplar;
     stream_params.model_type = 'exemplar';
     stream_params.cls = class;
 
-    %Create an exemplar stream (list of exemplars)
+    % Create an exemplar stream (list of exemplars)
     e_stream_set = get_pascal_stream(stream_params, dataset_params);
-
+    
+    % Define negative exemplars
     neg_set = get_pascal_set(dataset_params, 'train', class, -1);
 
-    %Choose a models name to indicate the type of training run we are doing
+    % Choose a models name to indicate the type of training run we are doing
     models_name = [class '-' params.init_params.init_type '.' params.model_type];
 
     initial_models = initialize_exemplars(e_stream_set, params, models_name);
@@ -58,15 +59,18 @@ function [models, M, models_name] = main(class, data_directory, dataset_director
     train_params.detect_max_scale = 0.5;
     train_params.detect_exemplar_nms_os_threshold = 1.0;
     train_params.detect_max_windows_per_exemplar = 100;
-
+    
+    % Train the exemplars and get updated models name
+    [models, models_name] = train_exemplars(initial_models, neg_set, train_params);
+    
+    % Validation parameters
     val_params = params;
     val_params.detect_exemplar_nms_os_threshold = 0.5;
     val_params.gt_function = @load_gt_function;
+    
+    % Define validation set
     val_set_name = ['trainval'];
     val_set = get_pascal_set(dataset_params, val_set_name);
-
-    % Train the exemplars and get updated models name
-    [models, models_name] = train_exemplars(initial_models, neg_set, train_params);
 
     % Apply trained exemplars on validation set
     val_grid = detect_imageset(val_set, models, val_params, val_set_name);
