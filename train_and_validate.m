@@ -1,6 +1,5 @@
-function [models, M, models_name, params] = main(class, data_directory, dataset_directory, results_directory)
-    % Trains the model for the given class and performs evaluation and
-    % testing.
+function [models, M, models_name, params] = train_and_validate(class, data_directory, dataset_directory, results_directory)
+    % Trains the model for the given class and performs evaluation.
 
     % Copyright (C) 2011-12 by Tomasz Malisiewicz
     % All rights reserved.
